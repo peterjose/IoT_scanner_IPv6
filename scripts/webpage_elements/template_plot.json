@@ -1,0 +1,39 @@
+{
+  "chart": {
+    "zoomType": "x"
+  },
+  "title": {
+    "text": "IPv6 Addresses that Speak Popular IoT Protocol"
+  },
+  "subtitle": {
+    "text": "Click and drag in the plot area to zoom in OR Pinch the chart to zoom in"
+  },
+  "xAxis": {
+    "type": "datetime",
+    "title": {
+      "text": "Date"
+    }
+  },
+  "yAxis": {
+    "title": {
+      "text": "No. of IP Addresses"
+    }
+  },
+  "series": [],
+  "responsive": {
+    "rules": [
+      {
+        "condition": {
+          "maxWidth": 500
+        },
+        "chartOptions": {
+          "legend": {
+            "layout": "horizontal",
+            "align": "center",
+            "verticalAlign": "bottom"
+          }
+        }
+      }
+    ]
+  }
+}

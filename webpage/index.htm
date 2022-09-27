@@ -1,0 +1,194 @@
+<!-- Webpage design reference from snmpv3.io-->
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css">
+
+    <title>IoT Protocol Scanner6</title>
+
+</head>
+
+
+<body>
+    <!-- Put nav into container to center it on the page -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div id="logo"><img src="logo/Scanner6_logo.png" alt="home" height="60PX"/></div>
+        <div class="container">
+            <!--	            <a class="navbar-brand" href="#">↑</a>-->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav container">
+                    <ul class="navbar-nav justify-content-between w-100">
+                        <li><a class="nav-item nav-link" href="#home" style="font-family: verdana"><b>IoT Protocol
+                                    Scanner6</b></a></li>
+                        <li><a class="nav-item nav-link" href="#data_request">Data Request</a></li>
+                        <li><a class="nav-item nav-link" href="#tools">Tools</a></li>
+                        <li><a class="nav-item nav-link" href="#partners">Partners</a></li>
+                        <li><a class="nav-item nav-link" href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+
+        <div id="home" style="padding-top: 6em">
+            <h1 id="service">IoT-Speaking Hosts Discovery Service</h1>
+
+            <article class="px-4 py-2 row">
+
+                <div class="more-pad">
+                    <p>On this website we present the results of the ongoing active measurement to discover
+                        IoT-speaking hosts.</p>
+                    <p>This work is conducted as a part of Master Thesis <em>Discovering and Characterising IoT-Speaking Hosts in IPv6 Internet</em>. The active
+                        measurement is done on IPv6 internet, using the <a href="https://ipv6hitlist.github.io">IPv6
+                            hitlist service</a>.</p>
+                <!-- </div>
+
+                <div> -->
+                    <div id="plot-discovery" class="plot"></div>
+                    <div id="plot-maps" class="plot"></div>
+                </div>
+        </div>
+        <div id="data_request">
+
+            <h2>Data Request</h2>
+
+            <article class="px-4 py-2 row">
+                <div class="more-pad">
+                <!-- <div class="col-12 col-md-9"> -->
+                    <p>In order to facilitate further research, we share raw measurement results with fellow researchers. The data is sensitive, so you must send a quick <a
+                        href="mailto:pjose@mpi-inf.mpg.de?subject=IPv6%20IoT%20Measurement%20Service&body=Hi%2C%0A%0APlease%20grant%20me%20access%20to%20the%20IPv6%20IoT%20Measurement%20Service.%20My%20name%20is%20YOURNAMEHERE%2C%20my%20affiliation%20is%20CHANGEME%20and%20I%20want%20to%20use%20the%20data%20for%20FILLTHIS.%20Thank%20you.%0A%0AKind%20regards"> registration email</a> in order to gain access. Detailed information about the work department, the purpose of the data usage, and the data content should be included in the request.
+                    </p>
+                </div>
+            </article>
+        </div>
+
+
+        <div id="tools">
+            <h2>Tools</h2>
+            <article class="px-4 py-2 row">
+                <!-- <div class="col-12 col-md-9"> -->
+                    <div class="more-pad">
+                    <h4><b>Open Port Scanning Tool</b></h4>
+                        <p style="margin-left:2em;" align="justify" margin-left=100px>We have used <a href="https://github.com/tumi8/zmap">Zmap</a> tool from TUM which supports IPv6, along with our few custom probes for doing the open port scanning.
+                        </p>
+                    <h4><b>Application-Layer Network Scanner</b></h4>
+                        <p style="margin-left:2em;" align="justify">We extend the Zgrab2 tool to support popular IoT protocols like AMQP, XMPP, CoAP, MQTT and OPC UA. We also added support for DTLS to extend the scanner for scanning the secured version of CoAP. The code is available at <a href="https://github.com/peterjose/zgrab2">link</a>
+                        </p>
+                    <h4><b>Scanning Pipeline and other Tools</b></h4>
+                        <p style="margin-left:2em;" align="justify">The complete pipeline for the scanner and other tools can be found in our <a href="https://github.com/peterjose/IoT_scanner_IPv6">repository</a>.
+                        </p>
+                </div>
+            </article>
+        </div>
+
+        <div id="partners">
+            <h2>Partners</h2>
+            <article class="px-4 py-2 row">
+                <div class="row align-items-center">
+                    <div class="col-md-3 mr-auto my-3 logo-container">
+                        <a href="https://www.uni-saarland.de/en/home.html" class="a-img"><img
+                                src="logo/Universitat_Des_Saarlandes_Logo.png" alt="Saarland University logo"
+                                height="60" /></a>
+                    </div>
+                    <div class="col-md-3 ml-auto my-3 logo-container">
+                        <a href="https://www.mpi-inf.mpg.de" class="a-img"><img src="logo/mpi_logo.png"
+                                alt="MPI for Informatics logo" height="60" /></a>
+                    </div>
+                </div>
+        </div>
+
+        <div id="contact">
+            <h2>Contact</h2>
+            <article class="px-4 py-2 row">
+                <p>Contact us at <a href="mailto:pjose@mpi-inf.mpg.de">pjose@mpi-inf.mpg.de</a>.</p>
+            </article>
+        </div>
+
+        <div class="imprint">
+            <center>
+                <p><a href="https://imprint.mpi-klsb.mpg.de/inf/">Imprint</a> / <a
+                        href="https://data-protection.mpi-klsb.mpg.de/inf/">Data Protection</a></p>
+            </center>
+        </div>
+
+    </div> <!-- /container -->
+
+    <!-- JS STARTS HERE -->
+    <!-- jQuery -->
+    <!-- <script src="js/jquery-3.6.0.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Bootstrap JS - necessary for expanding the navbar menu -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.0/js/bootstrap.min.js"
+        integrity="sha512-8Y8eGK92dzouwpROIppwr+0kPauu0qqtnzZZNEF8Pat5tuRNJxJXCkbQfJ0HlUG3y1HB3z18CSKmUo7i2zcPpg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Hide navbar on click -->
+    <script>
+        $('.nav-item').on('click', function () {
+            $('.navbar-collapse').collapse('hide');
+        });
+
+    </script>
+
+    <!-- Highchart plotting libs -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/10.2.1/modules/data.js" integrity="sha512-wnI2omd/yIfWkAVkR8cU8ELxlj4qt/dQuO/grkaO0QwUniGOJ70mD3cCgJOGVEc9zTgGH418I/sGjIkb4tOhyw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/10.2.1/modules/exporting.js" integrity="sha512-OWB20cYDEZdVy6nUmVTzKnINnrJ08WDIS4AdYOaUgyZ/PqALLo5KfyExGkWEPz8Zds4OaR4Ana6FpWngy+9ytA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/10.2.1/modules/offline-exporting.js" integrity="sha512-nXYtJGj5IWY0YEfvHTku7pXFog14EFI/xd1U1eQfo2IuHr+3+0yfaZWadNYEjzcpjhMVqAOK7SJFOVdRtbmYrw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/10.2.1/modules/export-data.js" integrity="sha512-oeMoiwWE+62HWdXh0R4nXSouK2emZHNI46pLjFEOHz2OkhKb1hD8N4kut/GwpTeJhQU9Pk0FcIlsPGqglnGIQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/10.2.1/modules/accessibility.js" integrity="sha512-KonalKzQKr+2Kxvx/qKnN8Bx0WVyfnvy8tq5H6zc6U+97LqjbcQbbYyDnu7aWea617ot5AVI6Bo/RRbr2eeQGw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/10.2.1/highmaps.js"
+        integrity="sha512-dyB2EMu33Gm5XJzbq6OoqEhRJB6wz3D5lOpqGCfH3EYBF5bRJxHB69HOOVgBoN1KAFsuZ6NUGZuypfdrSn7gcQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Parse JSON for plotting -->
+    <script>
+        // Set thousands separator as comma
+        Highcharts.setOptions({
+            lang: {
+                thousandsSep: ','
+            }
+        });
+        $.getJSON('plot-discovery.json', function (chart) {
+            Highcharts.chart('plot-discovery', chart);
+        });
+
+        (async () => {
+
+            const topology = await fetch(
+                'https://code.highcharts.com/mapdata/custom/world-highres.topo.json'
+            ).then(response => response.json());
+
+            // Create the chart
+
+            $.getJSON("plot-map.json", function (json) {
+                json.chart.map = topology;
+                Highcharts.mapChart('plot-maps', json);
+            });
+        })();
+
+    </script>
+    <!-- JS ENDS HERE -->
+
+</body>
+
+</html>

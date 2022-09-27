@@ -1,0 +1,22 @@
+### SCAN SCRIPT FOR DTLS ###
+
+#! /bin/bash
+
+source config.sh
+
+if [ ! $TIME_STAMP ]; then
+  TIME_STAMP="$(date +"%H%M%S")"
+fi
+
+# DTLS 
+SCAN_PORT=$DTLS_SCAN_PORT
+NUMBER_OF_IP=$DTLS_NUMBER_OF_IP
+PROTOCOL_NAME=$DTLS_PROTOCOL_NAME
+SCAN_RATE=$DTLS_SCAN_RATE
+TIMEOUT=$DTLS_TIMEOUT
+OUTPUT_FILENAME=${PROTOCOL_NAME}_${TIME_STAMP}_${SCAN_PORT}
+SCAN_LIST=$DTLS_SCAN_IP_LIST
+IPV6_SCAN_CMD_OPTION=$DTLS_IPV6_SCAN_CMD_OPTION
+ZMAP_OUTPUT_FIELDS="saddr,daddr,sport,dport,ipid,ttl,classification,success,repeat,cooldown,timestamp_str"
+
+scan_function

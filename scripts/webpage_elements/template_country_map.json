@@ -1,0 +1,30 @@
+{
+    "chart": {
+        "map": "topology"
+    },
+
+    "title": {
+        "text": "Discoverd IPv6 address distribution"
+    },
+
+    "mapNavigation": {
+        "enabled": true,
+        "buttonOptions": {
+            "verticalAlign": "bottom"
+        }
+    },
+
+    "colorAxis": {
+        "min": 0
+    },
+
+    "series": [{
+        "data": [],
+        "name": "IP address distribution (%)",
+        "states": {
+            "hover": {
+                "color": "#BADA55"
+            }
+        }
+    }]
+}
