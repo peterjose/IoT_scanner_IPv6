@@ -60,6 +60,14 @@ DEFAULT_SCAN_LIST_FILENAME="hitlist_processed/file_name.txt"
 DEFAULT_NO_OF_SENDERS_ZGRAB=500
 
 ########### PATH ########################
+
+zgrab2Path=../zgrab2/
+zmap6Path=../zmap6/src/
+ipv4Blocklist=../blocklist/release/ipv4-bl-merged.txt
+ipv6Blocklist=../blocklist/release/ipv6-bl-merged.txt
+listOfIP_path_base=../searchlist
+extractIP_addressScriptFile=extract_saddr.py
+
 if [ ! $OutputPath ]; then
   if [ $IPV6_SCAN_FLAG = $ENABLED ]; then
     OutputPath=../output/ipv6/"$(date +"%d-%m-%Y")" #/"$(date +"%H%M%S")"
@@ -74,29 +82,6 @@ else
   summaryDirPath=../output/ipv4/summary
 fi
 
-zgrab2Path=../zgrab2/
-zmap6Path=../zmap6/src/
-ipv4Blocklist=../blocklist/release/ipv4-bl-merged.txt
-ipv6Blocklist=../blocklist/release/ipv6-bl-merged.txt
-listOfIP_path=../searchlist
-extractIP_addressScriptFile=extract_saddr.py
-
-#########################################
-
-if [ $IPV6_SCAN_FLAG = $ENABLED ]; then
-  # IPV6_SCAN_CMD_OPTION="--probe-module=icmp6_echoscan"
-  IPV6_SCAN_CMD_OPTION="--probe-module=ipv6_tcp_synscan"
-  IP_BLOCKLIST_FILE=$ipv6Blocklist
-  listOfIP_path=$listOfIP_path/ipv6
-  IPv6_SOURCE_IP_ADDRESS_OPTION_ZMAP="--ipv6-source-ip=$IPv6_SOURCE_IP_ADDRESS"
-  IPv6_SOURCE_IP_ADDRESS_ZGRAB_OPTION="--source-ip=$IPv6_SOURCE_IP_ADDRESS"
-  SCAN_INTERFACE_OPTION="--interface=$SCAN_INTERFACE"
-else
-  IP_BLOCKLIST_FILE=$ipv4Blocklist
-  listOfIP_path=$listOfIP_path/ipv4
-fi
-
-
 if [ ! -d $OutputPath ]; then
     mkdir -p $OutputPath;
 fi;
@@ -104,6 +89,75 @@ fi;
 if [ ! -d $summaryDirPath ]; then
     mkdir -p $summaryDirPath;
 fi;
+
+if [ ! $listOfIP_path ]; then
+  if [ $IPV6_SCAN_FLAG = $ENABLED ]; then
+    listOfIP_path=$listOfIP_path_base/ipv6
+  else
+    listOfIP_path=$listOfIP_path_base/ipv4
+  fi
+fi
+
+if [ ! -d $listOfIP_path ]; then
+    mkdir -p $listOfIP_path;
+fi;
+
+if [ ! $db_location_json ]; then
+  db_location_json=${listOfIP_path}/"$(date +"%d-%m-%Y")"/config_db_locations.json
+fi
+if [ ! -f $db_location_json ]; then
+    echo {} > $db_location_json;
+fi;
+
+# location of unfiltered hitlist
+if [ ! $hitlist_path ]; then
+  hitlist_path=${listOfIP_path}/"$(date +"%d-%m-%Y")"/hitlist_TUM_input #/"$(date +"%H%M%S")"
+fi
+if [ ! -d $hitlist_path ]; then
+    mkdir -p $hitlist_path;
+fi;
+
+if [ ! $processed_hitlist_dir_path ]; then
+  processed_hitlist_dir_path=${listOfIP_path}/"$(date +"%d-%m-%Y")"/hitlist_processed #/"$(date +"%H%M%S")"
+fi
+if [ ! -d $processed_hitlist_dir_path ]; then
+    mkdir -p $processed_hitlist_dir_path;
+fi;
+
+
+# location of Aliased Prefix Datasets
+if [ ! $apd_db_path ]; then
+  apd_db_path=${listOfIP_path}/"$(date +"%d-%m-%Y")"/apd_TUM #/"$(date +"%H%M%S")"
+fi
+if [ ! -d $apd_db_path ]; then
+    mkdir -p $apd_db_path;
+fi;
+
+# Additional DB
+
+if [ ! $additional_db_path ]; then
+  if [ $IPV6_SCAN_FLAG = $ENABLED ]; then
+    additional_db_path=../output/ipv6/"$(date +"%d-%m-%Y")"/additional_external_db #/"$(date +"%H%M%S")"
+  else
+    additional_db_path=../output/ipv4/"$(date +"%d-%m-%Y")"/additional_external_db #/"$(date +"%H%M%S")"
+  fi
+fi
+if [ ! -d $additional_db_path ]; then
+    mkdir -p $additional_db_path;
+fi;
+
+#########################################
+
+if [ $IPV6_SCAN_FLAG = $ENABLED ]; then
+  # IPV6_SCAN_CMD_OPTION="--probe-module=icmp6_echoscan"
+  IPV6_SCAN_CMD_OPTION="--probe-module=ipv6_tcp_synscan"
+  IP_BLOCKLIST_FILE=$ipv6Blocklist
+  IPv6_SOURCE_IP_ADDRESS_OPTION_ZMAP="--ipv6-source-ip=$IPv6_SOURCE_IP_ADDRESS"
+  IPv6_SOURCE_IP_ADDRESS_ZGRAB_OPTION="--source-ip=$IPv6_SOURCE_IP_ADDRESS"
+  SCAN_INTERFACE_OPTION="--interface=$SCAN_INTERFACE"
+else
+  IP_BLOCKLIST_FILE=$ipv4Blocklist
+fi
 
 DEFAULT_ZMAP_OUTPUT_FIELDS="saddr,daddr,sport,dport,ipid,ttl,seqnum,acknum,window,classification,success,repeat,cooldown,timestamp_str"
 
@@ -216,7 +270,8 @@ scan_function () {
   fi
   # If default scan list has to be used then
   if [ $USE_DEFAULT_SCAN_IP_LIST_FLAG = $ENABLED ]; then
-    SCAN_LIST=$listOfIP_path/$DEFAULT_SCAN_LIST_FILENAME
+    # SCAN_LIST=$listOfIP_path/$DEFAULT_SCAN_LIST_FILENAME
+      SCAN_LIST=$processed_hitlist_path
   fi
   if [ $SCAN_LIST ] && [ $USE_SCAN_IP_LIST_FLAG = $ENABLED ]; then
     if [ $IPV6_SCAN_FLAG = $ENABLED ]; then

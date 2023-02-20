@@ -45,7 +45,7 @@ ZMAP_META_FILE = "_zmap_metadata.json"
 
 AS_LINK= 'https://publicdata.caida.org/datasets/routing/routeviews6-prefix2as/'
 AS_LOG_FILE='pfx2as-creation.log'
-AS_DIR_NAME='AS_list'
+AS_DIR_NAME='additional_external_db'
 
 ZGRAB_OUT_FILE_KEY = "zgrab2_out_file_path"
 AS_FILE_PATH_KEY = "AS_file_path"

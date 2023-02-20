@@ -22,6 +22,9 @@ echo "*** Start Time : "$(date +"%d-%m-%Y:%H:%M:%S")" *****" >> $summaryDirPath/
 echo Start Time : "$(date +"%d-%m-%Y:%H:%M:%S")"
 startTime="$(date +%s)"
 
+source pre_scan_scripts.sh
+echo scan starts with processed hitlist present at ${processed_hitlist_path}
+
 if [ $SCAN_XMPP_FLAG  = $ENABLED ]; then
     ./scan_xmpp.sh
 fi

@@ -8,7 +8,6 @@
 # TODO: Fix Bug in reading encoded data from the file
 
 import ipaddress
-from re import TEMPLATE
 import subprocess
 import pkg_resources
 import argparse
@@ -16,8 +15,8 @@ import sys
 import json
 import pathlib
 import time
-import datetime
-from datetime import date
+from datetime import datetime, date, timezone
+from datetime import time as tm
 import filter_package
 
 
@@ -35,7 +34,7 @@ ZGRAB_META_FILE = "_scan_summary.json"
 
 AS_LINK= 'https://publicdata.caida.org/datasets/routing/routeviews6-prefix2as/'
 AS_LOG_FILE='pfx2as-creation.log'
-AS_DIR_NAME='AS_list'
+AS_DIR_NAME='additional_external_db'
 
 ZGRAB_OUT_FILE_KEY = "zgrab2_out_file_path"
 AS_FILE_PATH_KEY = "AS_file_path"
@@ -53,6 +52,7 @@ PROCESSED_DATA_DIR_NAME = "processed_data"
 DATA_FRAME_FILENAME = "DataFrame.json"
 
 MAX_MIND_DATABASE_USAGE_DATE = '11-06-2022'
+COAP_START_DATE = '11-06-2022'
 MAX_MIND_GEOLITE2_DB_COMMON_PREFIX = 'GeoLite2-' 
 MAX_MIND_GEOLITE2_ASN_DB_NAME = 'GeoLite2-ASN'
 MAX_MIND_GEOLITE2_COUNTRY_DB_NAME = 'GeoLite2-Country'
@@ -66,10 +66,11 @@ STANFORD_ASDB_DATASET_LINK = "https://asdb.stanford.edu/data/"
 STANFORD_ASDB_DATASET_FILE_NAME_SUFFIX = "_categorized_ases.csv"
 
 WEBPAGE_CONTENT_PLOT_DISCOVERY_DATA = "../webpage/plot-discovery.json"
-WEBPAGE_CONTENT_PLOT_MAP_DATA = "../webpage/plot-maps.json"
+WEBPAGE_CONTENT_PLOT_MAP_DATA = "../webpage/plot-map.json"
 
 TEMPLATE_PLOT_DISCOVERY_DATA_FILE_NAME = 'webpage_elements/template_plot.json'
-TEMPLATE_MAP_DATA_FILE_NAME = 'webpage_elements/template_country.json'
+TEMPLATE_MAP_COUNTRY_DATA_FILE_NAME = 'webpage_elements/template_country.json'
+TEMPLATE_MAP_DATA_FILE_NAME = 'webpage_elements/template_country_map.json'
 
 ############################## CONFIG END ##############################
 
@@ -89,11 +90,9 @@ if len(missing) != 0:
 import SubnetTree
 import ipaddress
 import pandas as pd
-import numpy as np
 import geoip2.database
 
-
-def data_scraper(item):
+def data_scraper(item,create_data_frame):
     """
     Function to extract the data from log files
     Args:
@@ -105,7 +104,7 @@ def data_scraper(item):
     Raises:
         Nil
     """
-    # print(item)
+    print(item)
     processed_data = []
     zgrab2_outFile_name = item[ZGRAB_OUT_FILE_KEY]
     AS_file_name = item[AS_FILE_PATH_KEY]
@@ -225,6 +224,8 @@ def data_scraper(item):
                             for key_ in zgrab_data["data"][protocol]["result"]:
                                 if key_ == protocol:
                                     response = zgrab_data["data"][protocol]["result"][protocol].strip('\n')
+                                    if create_data_frame:
+                                        break
                                 elif key_ == "tls":
                                     tls = "1"
                                     tls_pointer = zgrab_data["data"][protocol]["result"]["tls"]
@@ -316,9 +317,15 @@ def create_process_list(scan_path,categorized_as_file_name):
 
     # get all the zgrab output files
     scan_output_list = ([x.name for x in scan_path.iterdir() if x.is_dir()])
-    if "coap" in scan_output_list:
-        pass
-        # scan_output_list.remove("coap")
+    scanDate = date.today()
+    try:
+        scanDate = datetime.strptime(scan_path.name, '%d-%m-%Y').date()
+    except Exception as e: 
+        print("Error", repr(e))
+    if(scanDate < datetime.strptime(COAP_START_DATE, '%d-%m-%Y').date()):
+        if "coap" in scan_output_list:
+            pass
+            scan_output_list.remove("coap")
     
     for folder in scan_output_list:
         zgrab2_output_files_list = ([x for x in pathlib.Path(scan_path,folder).iterdir() if (x.is_file() and x.name.find(ZGRAB_META_FILE) != -1)])
@@ -329,15 +336,10 @@ def create_process_list(scan_path,categorized_as_file_name):
             port = fileDetails[2]
             zgrab_summary = open(zgrab2_summary_file,'r').read()
             zgrab2_out_file = str(zgrab2_summary_file).replace(ZGRAB_META_FILE,ZGRAB_OUT_FILE)
-            scanDate = date.today()
             AS_file_path_final = ''
             AS_country_file_path = ''
             AS_Category_file_path = ''
             ##### AS and AS Country
-            try:
-                scanDate = datetime.strptime(scan_path.name, '%d-%m-%Y').date()
-            except Exception as e: 
-                print("Error", repr(e))
             if(scanDate < datetime.strptime(MAX_MIND_DATABASE_USAGE_DATE, '%d-%m-%Y').date()):
                 try:
                     date_ = ((json.loads(zgrab_summary))["start"].split('T')[0]).replace('-','')
@@ -425,10 +427,13 @@ def generate_webpage_discovery_data(dataFrame):
                 data = json.load(file)
         scan_code_list = dataFrame.sort_values(by = ['scan_code'],ascending=True)['scan_code'].unique().tolist()
         for scan_code in scan_code_list:
-            scan_time_epoch = int(datetime.datetime.combine(scan_code,datetime.time(0,0,0),tzinfo=datetime.timezone.utc).timestamp()*1000)
+            if(type(scan_code) == str):
+                scan_time_epoch = int(datetime.combine(datetime.strptime(scan_code, '%d-%m-%Y').date()
+                                        ,tm(0,0,0),tzinfo=timezone.utc).timestamp()*1000)
+            else:
+                scan_time_epoch = int(datetime.combine(scan_code,tm(0,0,0),tzinfo=timezone.utc).timestamp()*1000)
             df = dataFrame[dataFrame['scan_code'] == scan_code]
             protocol_port_list = df.sort_values(by = ['Protocol, Port'],ascending=True)['Protocol, Port'].unique().tolist()
-            protocol_port_list = protocol_port_list
             df = df[(df['status'] == 'success')]
             df = df.groupby(['Protocol, Port'],sort=False).count().fillna(0).reset_index()[['Protocol, Port','ip']]
             df = df.rename(columns={'ip':'count'})
@@ -471,12 +476,20 @@ def generate_webpage_location_data(dataFrame):
         dataFrame = dataFrame.groupby(['country'],sort=False).count().fillna(0).reset_index()[['country','ip']]
         dataFrame['ip'] = round(dataFrame['ip']/float(dataFrame['ip'].sum())*100,3)
         dataFrame = dataFrame.rename(columns={'ip':'percentage'})
-        df = pd.read_json(TEMPLATE_MAP_DATA_FILE_NAME)
+        df = pd.read_json(TEMPLATE_MAP_COUNTRY_DATA_FILE_NAME)
         df.columns = ['country','percentage']
         df['percentage'] = 0
         df = df.set_index('country').add(dataFrame.set_index('country'), fill_value=0)
         df = df.reset_index(level=None)
-        df.to_json(WEBPAGE_CONTENT_PLOT_MAP_DATA, orient="values")  # hard coded path to be removed
+        # df.to_json(WEBPAGE_CONTENT_PLOT_MAP_DATA, orient="values")  # hard coded path to be removed
+        list_of_countries = json.loads(df.to_json(orient="values")) 
+        data = []
+        with open(TEMPLATE_MAP_DATA_FILE_NAME, 'r') as file:
+            data = json.load(file)
+        
+        data['series'][0]['data'] = list_of_countries
+        with open(WEBPAGE_CONTENT_PLOT_MAP_DATA, 'w') as f:
+            json.dump(data, f)
     except Exception as e: 
         print("Error", repr(e))
 
@@ -552,13 +565,13 @@ def main():
         
         # dataFrame = pd.DataFrame()
         for item in process_list:
-            df = pd.DataFrame(data_scraper(item))
+            df = pd.DataFrame(data_scraper(item,args.create_data_frame))
             dataFrame = dataFrame.append(df, ignore_index=True)
 
         try:
             dataFrame['protocol'] = dataFrame['protocol'].apply(lambda x: x.upper())
             dataFrame.loc[dataFrame['port'].astype(str) == '8883', 'protocol'] = 'MQTTS'
-            dataFrame.loc[dataFrame['port'].astype(str) == '5684', 'protocol'] = 'COAPS'
+            dataFrame.loc[dataFrame['port'].astype(str) == '5684', 'protocol'] = 'CoAPs'
             dataFrame.loc[dataFrame['port'].astype(str) == '5683', 'protocol'] = 'CoAP'
             dataFrame.loc[dataFrame['port'].astype(str) == '23', 'protocol'] = 'Telnet'
             dataFrame.loc[dataFrame['port'].astype(str) == '4840', 'protocol'] = 'OPC UA'
